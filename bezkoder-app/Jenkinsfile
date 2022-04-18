@@ -1,0 +1,45 @@
+pipeline {
+    environment {
+        DOCKERHUB_CREDENTIALS=credentials('dockerhub-cred')
+    }
+    agent any 
+    stages {
+        stage('Unit Tests') {
+            agent { docker 'maven:3.8.1-adoptopenjdk-11' } 
+            steps {
+                sh "mvn test -Dtest=SpringBootDataJpaApplicationUnitTest"
+            }
+        }
+        stage('Integration Tests') {
+            agent { docker 'maven:3.8.1-adoptopenjdk-11' } 
+            steps {
+                sh "mvn test -Dtest=SpringBootDataJpaApplicationIntegrationTest"
+            }
+        }
+        stage('Login to Docker Hub') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('Docker Image build & tag') {
+            steps {
+                sh 'docker build -t zakariaasadek/container-solution-app:$BUILD_NUMBER -f Dockerfile .'
+            }
+        }
+        stage('Docker Image Push to registry') {
+            steps {
+                sh 'docker push zakariaasadek/container-solution-app:$BUILD_NUMBER'
+            }
+        }
+        stage('Deploy SomeWhere') {
+            steps {
+                sh 'echo TO be Done Later'
+            }
+        }
+    }
+    post{
+        success{
+            echo 'I succeeded!'
+        }
+    }
+}

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # annotations:
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: bezkoder-rest-api
+spec:
+  rules:
+  - host: my-rest-api.zakariaa.sadek.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: container-solution-app-service
+            port:
+              number: 8080

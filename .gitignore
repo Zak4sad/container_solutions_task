@@ -1,0 +1,10 @@
+.classpath
+.project
+.settings/
+*/target/**
+*.class
+**/.DS_Store
+bin
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*

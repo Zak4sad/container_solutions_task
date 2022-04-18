@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-db-secret
+type: Opaque
+data:
+  MYSQL_ROOT_PASSWORD: MTIzNDU2
+  MYSQL_DATABASE: YmV6a29kZXJfZGI=
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: container-solution-app-secret
+type: Opaque
+data:
+  MYSQLDB_USER: cm9vdA==
+  MYSQLDB_ROOT_PASSWORD: MTIzNDU2
+  MYSQLDB_DATABASE: YmV6a29kZXJfZGI=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-solution-app
+  labels:
+    app: container-solution-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-solution-app
+  template:
+    metadata:
+      labels:
+        app: container-solution-app
+    spec:
+      containers:
+      - name: container-solution-app
+        image: container-solution-app:latest
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 20
+          timeoutSeconds: 2
+          periodSeconds: 3
+          failureThreshold: 2
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 50
+          timeoutSeconds: 2
+          periodSeconds: 8
+          failureThreshold: 1  
+        env:
+        - name : MYSQLDB_SERVICE
+          value: mysql-service
+        - name: MYSQLDB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: container-solution-app-secret
+              key: MYSQLDB_DATABASE  
+        - name: MYSQLDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: container-solution-app-secret
+              key: MYSQLDB_USER
+        - name: MYSQLDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: container-solution-app-secret
+              key: MYSQLDB_ROOT_PASSWORD
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-db-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-db-secret
+              key: MYSQL_DATABASE
+        volumeMounts:
+          - name: data
+            mountPath: /var/lib/mysql
+        ports:
+        - containerPort: 3306
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -ec
+            - >-
+              mysql -h127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD -e'SELECT 1'
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "-uroot", "-p$MYSQL_ROOT_PASSWORD", "ping"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: local-claim      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: container-solution-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: container-solution-app
+  ports:
+    # - protocol: TCP
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  # type: LoadBalancer
+  selector:
+    app: mysql
+  ports:
+    # - protocol: TCP
+    - port: 3306
+      targetPort: 3306
