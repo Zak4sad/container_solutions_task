@@ -1,20 +1,35 @@
-# Technical assessment from Container Solutions
+# Description
 
 This application is now more of a learning project or a playground because here is where I'm try out new things. It all started in 2021 when I took part in a Technical assessment from Container Solutions(the project's specifications can be found [here](./api_specifications/) ).
 
-The project is developed using Spring Boot , I managed to translate the given CSV file [titanic.csv] to a SQL file ,
-I used [this website](https://www.convertcsv.com/csv-to-sql.htm) to proceed with the conversion.
-The data is initialized and inserted on startup. The file is named data , and its located in `bezkoder-app/src/main/resources/data.sql`
+The project is developed using Spring Boot.
 
-I also add a swagger UI as the one given in [swagger.yml] file to be able to allows us to describe the structure of our REST. And this helps us to automatically build a good and interactive API documentation.
+## Accomplishments/Features
+
+***It's hard to automate a task that you don't know how to do manually***
+
+- The code is presented as if this were work you would do for a client and you were given this brief.
+- The code run in 1 or 2 commands—this project needs to be deployment ready and run it a cloud or local environment with as little effort as possible.
+- The API is conform to the specifications (correct endpoints and it should work well and it should run on any machine).
+- Tried more advanced stuff in the Dockerfile: multi-stage Dockerfile, skinny Docker image, important part is multi-stage Dockerfile, correct tag usage, caching effectiveness, recommend user ID; not run as root, exposing ports.
+- Tried some advanced stuff in kubernetes, eg: secrets in K8s.
+- Translate the given CSV file [titanic.csv] to a SQL file , I used [this website](https://www.convertcsv.com/csv-to-sql.htm) to proceed with the conversion.
+- Replace integer for uuid by the randomized uuid string.
+- Added a trigger for the data.sql to add a random uuid (_equivalent of AutoIncrement for a normal id_).
+- Add Integration tests and Unit tests.
+- Add a swagger UI as the one given in [swagger.yml].
+- Use Storage to store inserted/updated/deleted data ( Volume for docker, PVC for kubernetes ).
+- Clean K8s architecture ( DB / App separate).
+- No need to use init container(k8s) to import data as it's done automatically.
+- Implemented a CI/CD pipeline using Gitlab CI.
+- Scan the Docker image for security vulnerabilities.
+- Configure a monitoring system using Prometheus.
 
 ## Run it using docker-compose
 In my docker-compose file I used :
 - Two services ( mysqldb , app )
-- Replace integer for uuid by the randomized uuid string
-- Added a trigger for the data.sql to add a random uuid (_equivalent of AutoIncrement for a normal id_)
 - A SQL file (data.sql) that inserts data on startup
-- Multi-stage Dockerfile with skinny Docker images **maven:3.6.1-jdk-8-alpine && openjdk:8-jre-alpine3.9**
+- Multi-stage Dockerfile with skinny Docker images **maven:3.8.4-jdk-8-slim && openjdk:8-jre-slim**
 - Exposing ports (in dockerfile for Spring-boot-app , and in docker-compose file for MySQL database)
 - Volume for MySQL database
 - Env file **.env** to store some data ( ports, db_username, db_password, db_name )
@@ -123,7 +138,8 @@ To see the graph , I copied the result of the above command and use [this websit
 ![Terraform Graph](./images/terraform-graph.png)
 
 ## Swagger
-I used it to visualize back-end APIs, and with Swagger UI it provides online sandbox for frontend developers.
+file to be able to allows us to . 
+I used it to visualize and describe the structure of our REST API, and with Swagger UI it provides online sandbox for frontend developers by helping them to automatically build a good and interactive API documentation
 > To Open Swagger page use 
 http://localhost:8080/swagger-ui.html
 The result will be something like : 
@@ -152,19 +168,29 @@ In this part , I tried to test the most popular tools (Gitlab CI , GitHub Action
 
 - Jenkins = : Just started but needs more enhancements
 - GitHub Actions : To Be Done
-- Gitlab CI : Fun starts here , I managed to create a simple pipeline in which I focused more on the CI part of the job .The pipepline is in ***.gitlab-ci.yml*** file,it contains four stages : 
-  1. unit_test : Performed unit tests
-  2. integration_test : Performed unit tests
-  3. build_and_push : Build Multi-Architecture Docker Images With Buildx and push them to both [Gitlab registry](https://gitlab.com/zakariaa_sadek/container_solutions_task/container_registry) and [Docker registry](https://hub.docker.com/repository/docker/zakariaasadek/container_solutions_task)
-  4. container_scanning : Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
+- Gitlab CI : Fun starts here , I managed to create a simple pipeline in which I focused more on the CI part of the job. The pipepline is in ***.gitlab-ci.yml*** file,it contains four stages : 
+    1. build: Build the project and generate its artifact (Jar file)
+    2. test: Has five parallel steps:
+        1. unit_test : Performed unit tests
+        2. integration_test : Performed integration tests
+        3. dependency_scanning: Analyses the dependencies in the published vulnerability database and provides a report.
+        4. smoke_test: To determines whether the deployed app build is stable or not.
+        5. code_coverage: Monitor the quality of testing, create tests that are missing or not validated.
+    3. gitLab_pages: Used in master only, we take report from dependency_scanning step and publish it as a GitLab Badge  
+    4. docker: Build Multi-Architecture Docker Images With Buildx and push them to both [Gitlab registry](https://gitlab.com/zakariaa_sadek/container_solutions_task/container_registry) and [Docker registry](https://hub.docker.com/repository/docker/zakariaasadek/container_solutions_task)
+    5. scan: Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
+
+It's All good in Gitlab:
+![Gitlab](./images/gitlab.png)
 
 ## TODO List
 Trying to add more cool stuff to this project , stay tuned.
 - Create Github actions pipeline
 - Create Jenkins pipeline
 - Alerting through Slack or Email
+- Enable Logging
 - Use Terraform to automatically bootstrap the whole infrastructure
-- Deploy my application in AWS or GCP
+- Deploy my application in AWS or GCP or Even Azure
 
 Please feel free to add something that can enhance this project. 
 
