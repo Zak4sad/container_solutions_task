@@ -138,7 +138,6 @@ To see the graph , I copied the result of the above command and use [this websit
 ![Terraform Graph](./images/terraform-graph.png)
 
 ## Swagger
-file to be able to allows us to . 
 I used it to visualize and describe the structure of our REST API, and with Swagger UI it provides online sandbox for frontend developers by helping them to automatically build a good and interactive API documentation
 > To Open Swagger page use 
 http://localhost:8080/swagger-ui.html
