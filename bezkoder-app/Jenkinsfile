@@ -15,13 +15,17 @@ pipeline {
     }
   }
   stages {
-    stage('Run maven') {
+    stage('maven-build') {
       steps {
         container('maven') {
-          sh 'mvn -version'
-        }
-        container('maven') {
           sh 'mvn clean package -B -f bezkoder-app/pom.xml'
+        }
+      }
+    }
+    stage('unit_test') {
+      steps {
+        container('maven') {
+          sh 'mvn test -Dtest=SpringBootDataJpaApplicationUnitTest -f bezkoder-app/pom.xml'
         }
       }
     }
