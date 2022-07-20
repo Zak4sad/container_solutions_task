@@ -1,4 +1,8 @@
 pipeline {
+  environment {
+    DOCKER_ID = credentials('DOCKER_ID')
+    DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
+  }
   agent {
     kubernetes {
       yaml '''
@@ -15,10 +19,6 @@ pipeline {
             image: carlallen/docker:buildx
             tty: true
         '''
-    }
-    environment {
-        DOCKER_ID = credentials('DOCKER_ID')
-        DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
     }
   }
   stages {
