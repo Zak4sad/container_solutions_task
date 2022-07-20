@@ -29,5 +29,19 @@ pipeline {
         }
       }
     }
+    stage('integration_test') {
+      steps {
+        container('maven') {
+          sh 'mvn test -Dtest=SpringBootDataJpaApplicationIntegrationTest -f bezkoder-app/pom.xml'
+        }
+      }
+    }
+    stage('dependency_scanning') {
+      steps {
+        container('maven') {
+          sh 'mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests -f bezkoder-app/pom.xml'
+        }
+      }
+    }
   }
 }
