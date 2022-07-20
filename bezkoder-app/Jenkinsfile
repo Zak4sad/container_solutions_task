@@ -54,9 +54,9 @@ pipeline {
       steps {
         container('buildx') {
           sh 'export DOCKER_BUILDKIT=1'
-          sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_ID --password-stdin'
+        //   sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_ID --password-stdin'
         //   sh 'docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY'
-        //   sh 'docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD docker.io'
+          sh 'docker login -u $DOCKER_ID -p $DOCKER_PASSWORD docker.io'
         //   sh 'docker login -u $GHCR_ORG -p $GHCR_TOKEN ghcr.io'
           sh 'export DOCKER_CLI_EXPERIMENTAL=enabled'
           sh 'docker buildx create --driver=docker-container --name=buildkit-builder --use'
