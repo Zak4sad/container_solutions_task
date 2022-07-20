@@ -11,6 +11,12 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: dind
+            image: docker:dind
+            tty: true
+          - name: docker-compose
+            image: docker/compose:latest
+            tty: true
         '''
     }
   }
@@ -40,6 +46,19 @@ pipeline {
       steps {
         container('maven') {
           sh 'mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests -f bezkoder-app/pom.xml'
+        }
+      }
+    }
+    stage('smoke_test') {
+      steps {
+        container('maven') {
+          sh 'apk --no-cache add curl'
+          sh 'COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build'
+          sh 'docker-compose up -d'
+          sh 'sleep 30'
+          sh 'curl http://docker:8080/actuator/health | grep "UP"'
+          sh 'mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests -f bezkoder-app/pom.xml'
+          sh 'docker-compose rm -fs'
         }
       }
     }
