@@ -19,10 +19,9 @@ pipeline {
       steps {
         container('maven') {
           sh 'mvn -version'
-          sh 'pwd'
         }
         container('maven') {
-          sh 'pwd'
+          sh 'cd bezkoder-app'
           sh 'ls -al'  
           sh 'mvn clean package -B'
         }
