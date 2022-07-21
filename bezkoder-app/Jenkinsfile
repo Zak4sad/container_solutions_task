@@ -49,22 +49,21 @@ pipeline {
     //     }
     //   }
     // }
+
+    // stage('build_and_push') {
+    //   steps {
+    //     container('buildx') {
+    //       sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
+    //       sh 'docker build -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
+    //     }
+    //   }
+    // }
+
     stage('build_and_push') {
+      agent any
       steps {
-        container('buildx') {
-          sh 'export DOCKER_BUILDKIT=1'
-          sh 'echo $dockerhub'
-          sh 'echo $dockerhub_PSW'
-          sh 'echo $dockerhub_USR'
-          sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
-        //   sh 'docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY'
-        //   sh 'docker login -u $DOCKER_ID -p $DOCKER_PASSWORD docker.io'
-        //   sh 'docker login -u $GHCR_ORG -p $GHCR_TOKEN ghcr.io'
-          sh 'export DOCKER_CLI_EXPERIMENTAL=enabled'
-          sh 'docker buildx create --driver=docker-container --name=buildkit-builder --use'
-          sh 'docker buildx inspect --bootstrap'
-          sh 'docker buildx build --push --platform linux/amd64,linux/arm64 -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
-        }
+        sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
+        sh 'docker build -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
       }
     }
   }
