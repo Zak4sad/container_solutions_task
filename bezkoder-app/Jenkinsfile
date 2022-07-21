@@ -63,9 +63,8 @@ pipeline {
     stage('build_and_push') {
       steps {
         container('builder') {
-          sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
-          sh 'docker build -t zakariaasadek/container_solutions_task:zakariaa bezkoder-app/. '
-          sh 'docker push zakariaasadek/container_solutions_task:zakariaa'
+          sh "/kaniko/executor --dockerfile bezkoder-app/Dockerfile --context bezkoder-app/ --destination=zakariaasadek/container_solutions_task:zakariaa"
+          
         }
       }
     }
@@ -74,7 +73,8 @@ pipeline {
     //   agent any
     //   steps {
     //     sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
-    //     sh 'docker build -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
+    //     sh 'docker build -t zakariaasadek/container_solutions_task:zakariaa bezkoder-app/. '
+    //     sh 'docker push zakariaasadek/container_solutions_task:zakariaa'
     //   }
     // }
   }
