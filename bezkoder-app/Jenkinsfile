@@ -18,7 +18,7 @@ pipeline {
             image: carlallen/docker:buildx
             tty: true
           - name: dind
-            image: docker:20.10.16
+            image: docker:18.05-dind
             securityContext:
             privileged: true
             volumeMounts:
