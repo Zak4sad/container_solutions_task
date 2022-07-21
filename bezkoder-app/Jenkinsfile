@@ -63,6 +63,9 @@ pipeline {
     stage('build_and_push') {
       steps {
         container('builder') {
+          sh 'mkdir -p /kaniko/.docker'
+          sh 'echo "{\"auths\":{\"ol-apps-docker-dev-local.dockerhub-den.oraclecorp.com\":{\"username\":\"zakariaa.sadek@oracle.com\",\"password\":\"AKCp8mZmw1koq3P5PkQLoCbPEDpp366FLSirKRdBgG9ZaBAjKLwAM2ReDCMnJZVpn5sxNfvtr\"}}}" > /kaniko/.docker/config.json'
+          sh 'ls -alrt'
           sh "/kaniko/executor --dockerfile bezkoder-app/Dockerfile --context bezkoder-app/ --destination=ol-apps-docker-dev-local.dockerhub-den.oraclecorp.com/zasadektest/container_solutions_task:zakariaa"
           
         }
@@ -79,3 +82,4 @@ pipeline {
     // }
   }
 }
+
