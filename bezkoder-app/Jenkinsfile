@@ -63,7 +63,7 @@ pipeline {
     stage('build_and_push') {
       steps {
         container('builder') {
-          sh "/kaniko/executor --dockerfile bezkoder-app/Dockerfile --context bezkoder-app/ --destination=zakariaasadek/container_solutions_task:zakariaa"
+          sh "/kaniko/executor --dockerfile bezkoder-app/Dockerfile --context bezkoder-app/ --destination=ol-apps-docker-dev-local.dockerhub-den.oraclecorp.com/zasadekTest/container_solutions_task:zakariaa"
           
         }
       }
