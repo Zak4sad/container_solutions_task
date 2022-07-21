@@ -1,7 +1,6 @@
 pipeline {
   environment {
-    DOCKER_ID = credentials('DOCKER_ID')
-    DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
+    dockerhub = credentials('dockerhub')
   }
   agent {
     kubernetes {
@@ -22,41 +21,44 @@ pipeline {
     }
   }
   stages {
-    stage('maven-build') {
-      steps {
-        container('maven') {
-          sh 'mvn clean package -B -f bezkoder-app/pom.xml'
-        }
-      }
-    }
-    stage('unit_test') {
-      steps {
-        container('maven') {
-          sh 'mvn test -Dtest=SpringBootDataJpaApplicationUnitTest -f bezkoder-app/pom.xml'
-        }
-      }
-    }
-    stage('integration_test') {
-      steps {
-        container('maven') {
-          sh 'mvn test -Dtest=SpringBootDataJpaApplicationIntegrationTest -f bezkoder-app/pom.xml'
-        }
-      }
-    }
-    stage('dependency_scanning') {
-      steps {
-        container('maven') {
-          sh 'mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests -f bezkoder-app/pom.xml'
-        }
-      }
-    }
+    // stage('maven-build') {
+    //   steps {
+    //     container('maven') {
+    //       sh 'mvn clean package -B -f bezkoder-app/pom.xml'
+    //     }
+    //   }
+    // }
+    // stage('unit_test') {
+    //   steps {
+    //     container('maven') {
+    //       sh 'mvn test -Dtest=SpringBootDataJpaApplicationUnitTest -f bezkoder-app/pom.xml'
+    //     }
+    //   }
+    // }
+    // stage('integration_test') {
+    //   steps {
+    //     container('maven') {
+    //       sh 'mvn test -Dtest=SpringBootDataJpaApplicationIntegrationTest -f bezkoder-app/pom.xml'
+    //     }
+    //   }
+    // }
+    // stage('dependency_scanning') {
+    //   steps {
+    //     container('maven') {
+    //       sh 'mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests -f bezkoder-app/pom.xml'
+    //     }
+    //   }
+    // }
     stage('build_and_push') {
       steps {
         container('buildx') {
           sh 'export DOCKER_BUILDKIT=1'
-        //   sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_ID --password-stdin'
+          sh 'echo $dockerhub'
+          sh 'echo $dockerhub_PSW'
+          sh 'echo $dockerhub_USR'
+          sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
         //   sh 'docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY'
-          sh 'docker login -u $DOCKER_ID -p $DOCKER_PASSWORD docker.io'
+        //   sh 'docker login -u $DOCKER_ID -p $DOCKER_PASSWORD docker.io'
         //   sh 'docker login -u $GHCR_ORG -p $GHCR_TOKEN ghcr.io'
           sh 'export DOCKER_CLI_EXPERIMENTAL=enabled'
           sh 'docker buildx create --driver=docker-container --name=buildkit-builder --use'
