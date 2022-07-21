@@ -21,7 +21,7 @@ pipeline {
             image: docker:20.10.16
             command:
                 - cat
-              tty: true
+            tty: true
         '''
     }
   }
@@ -55,21 +55,21 @@ pipeline {
     //   }
     // }
 
-    // stage('build_and_push') {
-    //   steps {
-    //     container('buildx') {
-    //       sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
-    //       sh 'docker build -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
-    //     }
-    //   }
-    // }
-
     stage('build_and_push') {
-      agent any
       steps {
-        sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
-        sh 'docker build -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
+        container('buildx') {
+          sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
+          sh 'docker build -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
+        }
       }
     }
+
+    // stage('build_and_push') {
+    //   agent any
+    //   steps {
+    //     sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
+    //     sh 'docker build -t docker.io/zakariaasadek/container_solutions_task:$CI_PIPELINE_IID bezkoder-app/. '
+    //   }
+    // }
   }
 }
