@@ -57,7 +57,7 @@ pipeline {
 
     stage('build_and_push') {
       steps {
-        container('buildx') {
+        container('dind') {
           sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
           sh 'docker build -t zakariaasadek/container_solutions_task:zakariaa bezkoder-app/. '
           sh 'docker push zakariaasadek/container_solutions_task:zakariaa'
