@@ -1,6 +1,7 @@
 pipeline {
   environment {
-    dockerhub = credentials('dockerhub')
+    CI_REGISTRY="docker.io"
+    CI_TOKEN="46dc2ca4-df93-462c-a1e0-00010a40a68f"
   }
   agent {
     kubernetes {
@@ -16,7 +17,7 @@ pipeline {
             tty: true
           - name: builder
             image: gcr.io/kaniko-project/executor:debug
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
             - /busybox/cat
             tty: true
@@ -26,11 +27,12 @@ pipeline {
           volumes:
             - name: docker-config
               configMap:
-                name: docker-config  
+                name: docker-config
         '''
     }
   }
   stages {
+     
     // stage('maven-build') {
     //   steps {
     //     container('maven') {
@@ -58,15 +60,15 @@ pipeline {
     //       sh 'mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests -f bezkoder-app/pom.xml'
     //     }
     //   }
-    // }
-
+    // } 
+     
     stage('build_and_push') {
       steps {
         container('builder') {
-          sh 'mkdir -p /kaniko/.docker'
-          sh 'echo "{\"auths\":{\"ol-apps-docker-dev-local.dockerhub-den.oraclecorp.com\":{\"username\":\"zakariaa.sadek@oracle.com\",\"password\":\"AKCp8mZmw1koq3P5PkQLoCbPEDpp366FLSirKRdBgG9ZaBAjKLwAM2ReDCMnJZVpn5sxNfvtr\"}}}" > /kaniko/.docker/config.json'
-          sh 'ls -alrt'
-          sh "/kaniko/executor --dockerfile bezkoder-app/Dockerfile --context bezkoder-app/ --destination=ol-apps-docker-dev-local.dockerhub-den.oraclecorp.com/zasadektest/container_solutions_task:zakariaa"
+          sh 'cat /kaniko/.docker/config.json'
+          sh 'export HTTPS_PROXY=http://www-proxy-hqdc.us.oracle.com:80/'
+          sh 'export http_proxy=http://www-proxy-hqdc.us.oracle.com:80/'
+          sh "/kaniko/executor --verbosity debug --dockerfile bezkoder-app/Dockerfile --context bezkoder-app/ --destination=docker.io/zakariaasadek/container_solutions_task:zakariaa"
           
         }
       }
