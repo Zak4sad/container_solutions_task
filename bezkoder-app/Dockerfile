@@ -4,7 +4,7 @@
 FROM maven:3.8.4-jdk-8-slim AS build
 COPY ./src /home/bezkoder-app/src
 COPY ./pom.xml /home/bezkoder-app
-RUN --mount=type=cache,target=/root/.m2 mvn -f /home/bezkoder-app/pom.xml clean package -DskipTests
+RUN mvn -f /home/bezkoder-app/pom.xml clean package -DskipTests
 
 #
 # Package stage
