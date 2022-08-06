@@ -165,7 +165,7 @@ After importing [JVM Dashboard](https://grafana.com/grafana/dashboards/4701) , w
 Yeah my project has also a ci/cd pipepline , it's not finished yet , but let me explain.
 In this part , I tried to test the most popular tools (Gitlab CI , GitHub Actions and Jenkins)
 
-- Jenkins = : I created to create a simple pipeline/Jenkinsfile in which I focused more on the CI part of the job. The pipepline is in ***./bbezkoder-app/Jenkinsfile*** file,it contains six stages , I tried to explore and use Kubernetes Pods As build Agents: 
+- Jenkins = : I created to create a simple pipeline/Jenkinsfile in which I focused more on the CI part of the job. The pipepline is in ***./bezkoder-app/Jenkinsfile*** file,it contains six stages , I tried to explore and use Kubernetes Pods As build Agents: 
     1. maven-build: Build the project and generate its artifact (Jar file)
     2. Upload to artifactory: In which I configured [Jfrog](https://jfrog.com/) as an artifactory to upload the JAR file from stage 1
     more details will be shared in future commits
