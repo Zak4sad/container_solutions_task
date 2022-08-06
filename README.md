@@ -168,7 +168,7 @@ In this part , I tried to test the most popular tools (Gitlab CI , GitHub Action
 - Jenkins = : I created to create a simple pipeline/Jenkinsfile in which I focused more on the CI part of the job. The pipepline is in ***./bezkoder-app/Jenkinsfile*** file,it contains six stages , I tried to explore and use Kubernetes Pods As build Agents: 
     1. maven-build: Build the project and generate its artifact (Jar file)
     2. Upload to artifactory: In which I configured [Jfrog](https://jfrog.com/) as an artifactory to upload the JAR file from stage 1
-    more details will be shared in future commits
+    - More details will be shared in future commits
     3. unit_test : Performed unit tests
     4. integration_test : Performed integration tests
     5. build_and_push: Build the application Docker Image and push it to my personal [Docker registry](https://hub.docker.com/repository/docker/zakariaasadek/container_solutions_task)
