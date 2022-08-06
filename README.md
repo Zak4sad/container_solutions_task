@@ -165,7 +165,14 @@ After importing [JVM Dashboard](https://grafana.com/grafana/dashboards/4701) , w
 Yeah my project has also a ci/cd pipepline , it's not finished yet , but let me explain.
 In this part , I tried to test the most popular tools (Gitlab CI , GitHub Actions and Jenkins)
 
-- Jenkins = : Just started but needs more enhancements
+- Jenkins = : I created to create a simple pipeline/Jenkinsfile in which I focused more on the CI part of the job. The pipepline is in ***./bbezkoder-app/Jenkinsfile*** file,it contains six stages , I tried to explore and use Kubernetes Pods As build Agents: 
+    1. maven-build: Build the project and generate its artifact (Jar file)
+    2. Upload to artifactory: In which I configured [Jfrog](https://jfrog.com/) as an artifactory to upload the JAR file from stage 1
+    more details will be shared in future commits
+    3. unit_test : Performed unit tests
+    4. integration_test : Performed integration tests
+    5. build_and_push: Build the application Docker Image and push it to my personal [Docker registry](https://hub.docker.com/repository/docker/zakariaasadek/container_solutions_task)
+    6. scan: Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
 - GitHub Actions : To Be Done
 - Gitlab CI : Fun starts here , I managed to create a simple pipeline in which I focused more on the CI part of the job. The pipepline is in ***.gitlab-ci.yml*** file,it contains four stages : 
     1. build: Build the project and generate its artifact (Jar file)
@@ -185,7 +192,6 @@ It's All good in Gitlab:
 ## TODO List
 Trying to add more cool stuff to this project , stay tuned.
 - Create Github actions pipeline
-- Create Jenkins pipeline
 - Alerting through Slack or Email
 - Enable Logging
 - Use Terraform to automatically bootstrap the whole infrastructure
