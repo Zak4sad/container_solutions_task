@@ -115,14 +115,6 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.6</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/dto/*.class</exclude>
-                        <exclude>**/entities/*.class</exclude>
-                        <exclude>**/exceptions/*.class</exclude>
-                        <exclude>**/podam/*.class</exclude>
-                    </excludes>
-                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -137,17 +129,6 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <!-- <execution>
-                        <id>pre-unit-test</id>
-                        <phase>pre-unit-test</phase>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
-                            <propertyName>failsafeArgLine</propertyName>
-                        </configuration>
-                    </execution> -->
                     <execution>
                         <id>post-unit-test</id>
                         <phase>test</phase>
@@ -159,20 +140,9 @@
                             <outputDirectory>target/jacoco-ut</outputDirectory>
                         </configuration>
                     </execution>
-                    <!-- <execution>
-                        <id>pre-integration-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
-                            <propertyName>failsafeArgLine</propertyName>
-                        </configuration>
-                    </execution> -->
                     <execution>
                         <id>post-integration-test</id>
-                        <phase>post-integration-test</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
