@@ -182,11 +182,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <systemPropertyVariables>
-                        <jacoco-agent.destFile>target/jacoco.exec</jacoco-agent.destFile>
-                    </systemPropertyVariables>
-                </configuration>
             </plugin>
 			<!-- Used for unit tests -->
             <plugin>
