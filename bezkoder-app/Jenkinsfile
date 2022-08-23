@@ -30,6 +30,7 @@ pipeline {
      stage('sonar') {
        steps {
          container('maven') {
+            sh 'mvn clean install -f bezkoder-app/pom.xml -Dmaven.test.failure.ignore=true sonar:sonar -Dsonar.projectKey=container_solutions_task -Dsonar.host.url=http://sonarqube.sonarqube.svc:9000 -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml,target/site/jacoco-aggregate/jacoco.xml,target/jacoco-report/jacoco.xml,target/site/jacoco-aggregate-all/jacoco.xml -Dsonar.login=${JENKINS_SONAR_TOKEN}'
            sh 'mvn clean install -f bezkoder-app/pom.xml -Dmaven.test.failure.ignore=true sonar:sonar -Dsonar.projectKey=container_solutions_task -Dsonar.host.url=http://sonarqube.sonarqube.svc:9000 -Dsonar.login=${JENKINS_SONAR_TOKEN}'
          }
        }
