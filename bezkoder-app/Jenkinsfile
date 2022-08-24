@@ -4,6 +4,7 @@ pipeline {
     DOCKER_HUB_REGISTRY="https://index.docker.io/v1/"
     DOCKER_HUB_USER= "zakariaasadek"
     ARTIFACTORY_ACCESS_TOKEN = credentials('artifactory-access-token')
+    JENKINS_SONAR_TOKEN = credentials('jenkins_sonar_token')
     CI = true
   }
   agent {
