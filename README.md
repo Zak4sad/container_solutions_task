@@ -22,6 +22,9 @@ The project is developed using Spring Boot.
 - Clean K8s architecture ( DB / App separate).
 - No need to use init container(k8s) to import data as it's done automatically.
 - Implemented a CI/CD pipeline using Gitlab CI.
+- Implemented a CI/CD pipeline using Jenkins.
+- Push built artifact(s) to Jfro Artifactory.
+- Publish code coverage results in SonarQube.
 - Scan the Docker image for security vulnerabilities.
 - Configure a monitoring system using Prometheus.
 
@@ -168,11 +171,14 @@ In this part , I tried to test the most popular tools (Gitlab CI , GitHub Action
 - Jenkins = : I created to create a simple pipeline/Jenkinsfile in which I focused more on the CI part of the job. The pipepline is in ***./bezkoder-app/Jenkinsfile*** file,it contains six stages , I tried to explore and use Kubernetes Pods As build Agents: 
     1. maven-build: Build the project and generate its artifact (Jar file)
     2. Upload to artifactory: In which I configured [Jfrog](https://jfrog.com/) as an artifactory to upload the JAR file from stage 1
+    ![JFRO](./images/jfrog_artifactory.png
     - More details will be shared in future commits
     3. unit_test : Performed unit tests
     4. integration_test : Performed integration tests
-    5. build_and_push: Build the application Docker Image and push it to my personal [Docker registry](https://hub.docker.com/repository/docker/zakariaasadek/container_solutions_task)
-    6. scan: Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
+    5. code_coverage : Deployed a Sonarqube kubernetes instance and integrate it with Jenkins, run the sonar maven command and publish the result in the sonarqube dashboard.
+    ![SonarQube](./images/sonarqube.png)
+    6. build_and_push: Build the application Docker Image and push it to my personal [Docker registry](https://hub.docker.com/repository/docker/zakariaasadek/container_solutions_task)
+    7. scan: Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
 - GitHub Actions : To Be Done
 - Gitlab CI : Fun starts here , I managed to create a simple pipeline in which I focused more on the CI part of the job. The pipepline is in ***.gitlab-ci.yml*** file,it contains four stages : 
     1. build: Build the project and generate its artifact (Jar file)
@@ -196,6 +202,9 @@ Trying to add more cool stuff to this project , stay tuned.
 - Enable Logging
 - Use Terraform to automatically bootstrap the whole infrastructure
 - Deploy my application in AWS or GCP or Even Azure
+- Deploy the application in a staging environment (locally first)
+- Deploy the application in a production environment (locally first)
+
 
 Please feel free to add something that can enhance this project. 
 
