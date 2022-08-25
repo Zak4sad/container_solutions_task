@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:                       
-    path: "/Users/zasadek/Desktop/Learning/Jenkins_EssT/sonarqube/sonarqube"
+    path: "/mnt/sonarqube/sonarqube"
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
