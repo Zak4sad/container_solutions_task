@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: container-solution-app
-        image: container-solution-app:latest
+        image: zakariaasadek/container_solutions_task:@DOCKER_TAG@
         imagePullPolicy: IfNotPresent
         readinessProbe:
           httpGet:
