@@ -110,5 +110,26 @@ pipeline {
          }
        }
      }
+     
+      stage('deploy_to_staging') {
+       steps {
+         container('docker') {
+           sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
+           sh 'chmod u+x ./kubectl'  
+           sh './kubectl get pods'
+           sh './kubectl create ns staging'
+           sh './kubectl get ns'
+           // Grant admin permissions *in that namespace* to the service account for dynamic pod creation.
+           sh './kubectl create rolebinding default-admin --clusterrole=admin --serviceaccount=staging:default --namespace=staging'
+           sh 'ls -lart'
+           sh "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB_REGISTRY"
+           sh "docker pull zakariaasadek/container_solutions_task:$BUILD_NUMBER"
+           sh 'sed -i "s/@DOCKER_TAG@/$BUILD_NUMBER/" kubernetes/k8s-deployment.yaml'
+           sh './kubectl apply -f kubernetes/persistentvolume.yaml -n staging'
+           sh './kubectl apply -f kubernetes/persistentvolumeclaim.yaml -n staging'
+           sh './kubectl apply -f kubernetes/k8s-deployment.yaml -n staging'
+         }
+       }
+     }
   }
 }
