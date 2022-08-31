@@ -111,7 +111,7 @@ pipeline {
        }
      }
      
-      stage('deploy_to_staging') {
+     stage('deploy_to_staging') {
        steps {
          container('docker') {
            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
@@ -131,5 +131,17 @@ pipeline {
          }
        }
      }
+
+    stage('smoke_test') {
+       steps {
+         container('docker') {
+           sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
+           sh 'chmod u+x ./kubectl'  
+           sh './kubectl get ns'
+           sh 'curl http://192.168.65.4:32742/actuator/health | grep "UP"'
+         }
+       }
+     }
+
   }
 }
