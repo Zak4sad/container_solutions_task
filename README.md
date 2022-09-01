@@ -27,6 +27,7 @@ The project is developed using Spring Boot.
 - Publish code coverage results in SonarQube.
 - Scan the Docker image for security vulnerabilities.
 - Configure a monitoring system using Prometheus.
+- Deploy the application in a staging environment (locally first)
 
 ## Run it using docker-compose
 In my docker-compose file I used :
@@ -178,7 +179,9 @@ In this part , I tried to test the most popular tools (Gitlab CI , GitHub Action
     5. code_coverage : Deployed a Sonarqube kubernetes instance and integrate it with Jenkins, run the sonar maven command and publish the result in the sonarqube dashboard.
     ![SonarQube](./images/sonarqube.png)
     6. build_and_push: Build the application Docker Image and push it to my personal [Docker registry](https://hub.docker.com/repository/docker/zakariaasadek/container_solutions_task)
-    7. scan: Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
+    7. container_scanning : Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
+    8. deploy_to_staging : Deploy my new built docker image as a deployment in a separate namespace I called ***staging*** in my local cluster.
+    9. smoke_test: To determines whether the deployed app build is stable or not, by hitting one of the APIs exposed.
 - GitHub Actions : To Be Done
 - Gitlab CI : Fun starts here , I managed to create a simple pipeline in which I focused more on the CI part of the job. The pipepline is in ***.gitlab-ci.yml*** file,it contains four stages : 
     1. build: Build the project and generate its artifact (Jar file)
@@ -202,7 +205,6 @@ Trying to add more cool stuff to this project , stay tuned.
 - Enable Logging
 - Use Terraform to automatically bootstrap the whole infrastructure
 - Deploy my application in AWS or GCP or Even Azure
-- Deploy the application in a staging environment (locally first)
 - Deploy the application in a production environment (locally first)
 
 
