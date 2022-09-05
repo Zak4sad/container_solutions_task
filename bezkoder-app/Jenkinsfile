@@ -138,7 +138,40 @@ pipeline {
            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
            sh 'chmod u+x ./kubectl'  
            sh './kubectl get ns'
-           sh 'curl http://192.168.65.4:32742/actuator/health | grep "UP"'
+           sh 'ipadress=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")'
+           sh 'echo $ipadress'
+           sh 'port=$(kubectl get --namespace staging -o jsonpath="{.spec.ports[0].nodePort}" services container-solution-app-service)'
+           sh 'echo $port'
+           sh 'fulladress="$ipadress:$port"'
+           sh 'echo $fulladress'
+           sh 'curl http://$fulladress/actuator/health | grep "UP"'
+         }
+       }
+     }
+
+     stage('load_test') {
+       steps {
+         container('docker') {
+           sh 'ab -n 10000 -c 100 -k -H "Accept-Encoding: gzip, deflate" http://$fulladress/people'
+         }
+       }
+     }
+
+     stage('cleaning_up_K8S_resources') {
+       steps {
+         container('docker') {
+           sh './kubectl delete -f kubernetes/k8s-deployment.yaml -n staging'
+           sh './kubectl delete -f kubernetes/persistentvolumeclaim.yaml -n staging'
+           sh './kubectl apply -f kubernetes/persistentvolume.yaml -n staging'
+           sh './kubectl delete ns staging'
+         }
+       }
+     }
+   
+     stage('cleaning_up_DockerImages') {
+       steps {
+         container('docker') {
+           sh 'docker rmi zakariaasadek/container_solutions_task:$BUILD_NUMBER'
          }
        }
      }
