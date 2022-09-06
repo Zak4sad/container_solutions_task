@@ -23,6 +23,10 @@ pipeline {
             image: releases-docker.jfrog.io/jfrog/jfrog-cli-v2:2.2.0
             command: ['cat']
             tty: true  
+          - name: ab
+            image: zakariaasadek/apache_benchmark:latest
+            command: ['cat']
+            tty: true
           - name: docker
             image: docker:1.11
             command: ['cat']
