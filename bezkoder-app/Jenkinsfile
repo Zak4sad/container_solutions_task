@@ -153,8 +153,12 @@ pipeline {
 
      stage('load_test') {
        steps {
-         container('docker') {
-           sh 'ab -n 10000 -c 100 -k -H "Accept-Encoding: gzip, deflate" http://$fulladress/people'
+         container('ab') {
+            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
+            sh 'chmod u+x ./kubectl'  
+            sh './kubectl get ns'
+            sh 'ab -V'
+            sh 'ab -n 10000 -c 100 -k -H "Accept-Encoding: gzip, deflate" http://\$(./kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}"):\$(./kubectl get --namespace staging -o jsonpath="{.spec.ports[0].nodePort}" services container-solution-app-service)/people'
          }
        }
      }
