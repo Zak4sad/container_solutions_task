@@ -182,6 +182,9 @@ In this part , I tried to test the most popular tools (Gitlab CI , GitHub Action
     7. container_scanning : Scan the created Docker image for security vulnerabilities , I used for that [trivy](https://github.com/aquasecurity/trivy) which is a scanner for vulnerabilities in container images,file systems, and Git repositories
     8. deploy_to_staging : Deploy my new built docker image as a deployment in a separate namespace I called ***staging*** in my local cluster.
     9. smoke_test: To determines whether the deployed app build is stable or not, by hitting one of the APIs exposed.
+    10. load/performance_test: Using Apache Benchmark (ab is a tool for benchmarking your Apache HTTP server. It is designed to give you an impression of how your current Apache installation performs. This especially shows you how many requests per second your Apache installation is capable of serving.)
+    11. cleaning_up_K8S_resources: Remove k8s resources creating in the staging environment
+    12. cleaning_up_DockerImages: Remove the build docker Image
 - GitHub Actions : To Be Done
 - Gitlab CI : Fun starts here , I managed to create a simple pipeline in which I focused more on the CI part of the job. The pipepline is in ***.gitlab-ci.yml*** file,it contains four stages : 
     1. build: Build the project and generate its artifact (Jar file)
@@ -206,6 +209,7 @@ Trying to add more cool stuff to this project , stay tuned.
 - Use Terraform to automatically bootstrap the whole infrastructure
 - Deploy my application in AWS or GCP or Even Azure
 - Deploy the application in a production environment (locally first)
+- Create a docker Image that has most of the used agents ( docker, maven , trivy , apache benchmark, kubectl ...)
 
 
 Please feel free to add something that can enhance this project. 
