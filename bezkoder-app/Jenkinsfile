@@ -138,10 +138,17 @@ pipeline {
            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
            sh 'chmod u+x ./kubectl'  
            sh './kubectl get ns'
-           sh 'curl http://192.168.65.4:32742/actuator/health | grep "UP"'
+           sh """
+             ipadress=\$(./kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+             echo \$ipadress
+           """
+           sh """
+             port=\$(./kubectl get --namespace staging -o jsonpath="{.spec.ports[0].nodePort}" services container-solution-app-service)
+             echo \$port
+           """
+           sh 'curl http://\$(./kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}"):\$(./kubectl get --namespace staging -o jsonpath="{.spec.ports[0].nodePort}" services container-solution-app-service)/actuator/health | grep "UP"'
          }
        }
      }
-
   }
 }
