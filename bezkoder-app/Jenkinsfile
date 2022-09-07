@@ -19,7 +19,7 @@ pipeline {
             command: ['cat']
             tty: true
           - name: docker-maven-trivy-jfrog
-            image: zakariaasadek/maven_docker_trivy_jfrog
+            image: zakariaasadek/maven_docker_trivy_jfrog:0
             command: ['cat']
             tty: true
             volumeMounts:
