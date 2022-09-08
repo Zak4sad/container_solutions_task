@@ -14,12 +14,8 @@ pipeline {
         kind: Pod
         spec:
           containers:
-          - name: ab
-            image: zakariaasadek/apache_benchmark:latest
-            command: ['cat']
-            tty: true
-          - name: docker-maven-trivy-jfrog-kubectl
-            image: zakariaasadek/maven_docker_trivy_jfrog_kuebctl:0
+          - name: docker-maven-trivy-jfrog-kubectl-ab
+            image: zakariaasadek/maven_docker_trivy_jfrog_kuebctl_ab:0
             command: ['cat']
             tty: true
             volumeMounts:
@@ -36,7 +32,7 @@ pipeline {
      
      stage('maven-build') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
            sh 'mvn clean package -B -f bezkoder-app/pom.xml'
          }
        }
@@ -48,7 +44,7 @@ pipeline {
      }
      stage('Upload to artifactory') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
           sh 'export HTTPS_PROXY=http://www-proxy-hqdc.us.oracle.com:80/'
           sh 'export http_proxy=http://www-proxy-hqdc.us.oracle.com:80/' 
           sh 'jf rt ping --url=http://artifactory.artifactory.svc:8081/artifactory/'
@@ -58,14 +54,14 @@ pipeline {
      }
      stage('unit_test') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
            sh 'mvn test -Dtest=SpringBootDataJpaApplicationUnitTest -f bezkoder-app/pom.xml'
          }
        }
      }
      stage('integration_test') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
            sh 'mvn test -Dtest=SpringBootDataJpaApplicationIntegrationTest -f bezkoder-app/pom.xml'
          }
        }
@@ -73,7 +69,7 @@ pipeline {
 
      stage('code_coverage') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
             sh 'mvn clean install -f bezkoder-app/pom.xml -Dmaven.test.failure.ignore=true sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml -Dsonar.projectKey=container_solutions_task -Dsonar.host.url=http://sonarqube.sonarqube.svc:9000 -Dsonar.login=${JENKINS_SONAR_TOKEN}'
          }
        }
@@ -86,7 +82,7 @@ pipeline {
      
      stage('build_and_push') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
           sh "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB_REGISTRY"
           sh "docker build -t zakariaasadek/container_solutions_task:$BUILD_NUMBER bezkoder-app/"
           sh "docker push zakariaasadek/container_solutions_task:$BUILD_NUMBER"
@@ -96,7 +92,7 @@ pipeline {
     
      stage('container_scanning') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
           sh "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB_REGISTRY"
           sh "docker pull zakariaasadek/container_solutions_task:$BUILD_NUMBER"
           sh "trivy image --severity HIGH,CRITICAL zakariaasadek/container_solutions_task:$BUILD_NUMBER"
@@ -106,7 +102,7 @@ pipeline {
      
      stage('deploy_to_staging') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
            sh 'kubectl get pods'
            sh 'kubectl create ns staging'
            // Grant admin permissions *in that namespace* to the service account for dynamic pod creation.
@@ -124,7 +120,7 @@ pipeline {
 
      stage('smoke_test') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
            sh 'kubectl get ns'
            sh """
              ipadress=\$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
@@ -141,10 +137,8 @@ pipeline {
 
      stage('load_test') {
        steps {
-         container('ab') {
-            sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'  
-            sh 'chmod u+x ./kubectl'  
-            sh './kubectl get ns'
+         container('ab') {  
+            sh 'kubectl get ns'
             sh 'ab -V'
             sh 'ab -n 10000 -c 100 -k -H "Accept-Encoding: gzip, deflate" http://\$(./kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}"):\$(./kubectl get --namespace staging -o jsonpath="{.spec.ports[0].nodePort}" services container-solution-app-service)/people'
          }
@@ -153,7 +147,7 @@ pipeline {
 
      stage('cleaning_up_K8S_resources') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
            sh 'kubectl delete -f kubernetes/k8s-deployment.yaml -n staging'
            sh 'kubectl delete -f kubernetes/persistentvolumeclaim.yaml -n staging'
            sh 'kubectl apply -f kubernetes/persistentvolume.yaml -n staging'
@@ -164,7 +158,7 @@ pipeline {
    
      stage('cleaning_up_DockerImages') {
        steps {
-         container('docker-maven-trivy-jfrog-kubectl') {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {
            sh 'docker rmi zakariaasadek/container_solutions_task:$BUILD_NUMBER'
          }
        }
