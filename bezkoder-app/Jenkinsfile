@@ -140,7 +140,7 @@ pipeline {
          container('docker-maven-trivy-jfrog-kubectl-ab') {  
             sh 'kubectl get ns'
             sh 'ab -V'
-            sh 'ab -n 10000 -c 100 -k -H "Accept-Encoding: gzip, deflate" http://\$(./kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}"):\$(./kubectl get --namespace staging -o jsonpath="{.spec.ports[0].nodePort}" services container-solution-app-service)/people'
+            sh 'ab -n 10000 -c 100 -k -H "Accept-Encoding: gzip, deflate" http://\$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}"):\$(kubectl get --namespace staging -o jsonpath="{.spec.ports[0].nodePort}" services container-solution-app-service)/people'
          }
        }
      }
