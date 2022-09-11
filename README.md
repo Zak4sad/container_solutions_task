@@ -28,6 +28,8 @@ The project is developed using Spring Boot.
 - Scan the Docker image for security vulnerabilities.
 - Configure a monitoring system using Prometheus.
 - Deploy the application in a staging environment (locally first)
+- Create a docker Image that has most of the used agents ( docker, maven , trivy , apache benchmark, kubectl ...) and use it as Kubernetes Agent
+
 
 ## Run it using docker-compose
 In my docker-compose file I used :
@@ -209,7 +211,6 @@ Trying to add more cool stuff to this project , stay tuned.
 - Use Terraform to automatically bootstrap the whole infrastructure
 - Deploy my application in AWS or GCP or Even Azure
 - Deploy the application in a production environment (locally first)
-- Create a docker Image that has most of the used agents ( docker, maven , trivy , apache benchmark, kubectl ...)
 
 
 Please feel free to add something that can enhance this project. 
