@@ -163,5 +163,16 @@ pipeline {
          }
        }
      }
+     
+     stage ('Deploy To Prod'){
+       input{
+         message "Do you want to proceed for production deployment?"
+       }
+       steps {
+         container('docker-maven-trivy-jfrog-kubectl-ab') {  
+           sh 'echo "Deploy into Prod"'
+         }
+       }
+     }
   }
 }
