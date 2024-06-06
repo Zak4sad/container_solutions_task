@@ -77,7 +77,7 @@ jobs:
           docker buildx create --driver docker-container --name buildkit-builder --use
           docker buildx inspect --bootstrap
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USER }}" --password-stdin
+        run: echo '${{ secrets.DOCKER_HUB_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_HUB_USER }}' --password-stdin
       - name: Build and start containers
         run: |
           cd bezkoder-app
