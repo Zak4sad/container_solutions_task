@@ -120,7 +120,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: code-coverage
-          path: bezkoder-app/target/site/jacoco-ut/
+          path: bezkoder-app/target/site/jacoco-ut/index.html
       - name: Publish code coverage
         run: |
           mkdir -p public
