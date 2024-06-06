@@ -62,3 +62,29 @@ jobs:
         run: |
           cd bezkoder-app
           mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests
+
+  smoke_test:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        run: |
+          docker buildx create --driver docker-container --name buildkit-builder --use
+          docker buildx inspect --bootstrap
+      - name: Login to Docker Hub
+        run: echo '${{ secrets.DOCKER_HUB_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_HUB_USER }}' --password-stdin
+      - name: Build and start containers
+        run: |
+          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
+          docker-compose up -d
+      - name: Run smoke tests
+        run: |
+          sleep 30
+          curl http://localhost:8080/actuator/health | grep "UP"
+      - name: Tear down Docker containers
+        run: docker-compose down
