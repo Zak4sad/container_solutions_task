@@ -100,14 +100,14 @@ jobs:
         run: |
           cd bezkoder-app
           mvn verify
-          cat target/site/jacoco-ut/index.html | grep -o '<tfoot>.*</tfoot>'
+          cat target/site/jacoco-ut/dependency-check-report.html | grep -o '<tfoot>.*</tfoot>'
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage
           path: |
             bezkoder-app/target/surefire-reports/
-            bezkoder-app/target/site/jacoco-ut/index.html
+            bezkoder-app/target/site/jacoco-ut/dependency-check-report.html
 
   publish_code_coverage:
     runs-on: ubuntu-latest
