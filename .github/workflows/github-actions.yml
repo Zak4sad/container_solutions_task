@@ -100,4 +100,4 @@ jobs:
         run: |
           cd bezkoder-app
           mvn verify
-          ls -lart target/jacoco-ut/
+          cat target/jacoco-ut/index.html
