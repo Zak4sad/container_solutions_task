@@ -107,3 +107,20 @@ jobs:
         with:
           name: code-coverage
           path: bezkoder-app/target/jacoco-ut/index.html
+
+  publish_code_coverage:
+    runs-on: ubuntu-latest
+    needs: code_coverage
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Publish code coverage
+        run: |
+          mkdir -p public
+          mv bezkoder-app/target/site/jacoco-ut/* public/
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage
+          path: public
+          retention-days: 30
