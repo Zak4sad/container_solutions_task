@@ -117,7 +117,8 @@ jobs:
       - name: Publish code coverage
         run: |
           mkdir -p public
-          mv bezkoder-app/target/site/jacoco-ut/* public/
+          ls bezkoder-app/
+        ## target/site/jacoco-ut/* public/
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
