@@ -1,18 +1,28 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
-## First Job: Test
-  test:
-    runs-on: maven:3.8.5-openjdk-11-slim
-    ## Job's steps
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8.5-openjdk-11-slim
     steps:
-    - uses: actions/checkout@v3
-    - name: Build with Maven
-    - run: mvn -B package --file bezkoder-app/pom.xml
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build with Maven
+        run: |
+          cd bezkoder-app
+          mvn clean package -B
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: bezkoder-app
+          path: bezkoder-app/target/*.jar
+          retention-days: 1
