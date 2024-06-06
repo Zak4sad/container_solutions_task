@@ -124,5 +124,5 @@ jobs:
       - name: Publish code coverage
         run: |
           mkdir -p public
-          ls bezkoder-app/
+          ls bezkoder-app/target/
 
