@@ -106,7 +106,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage
-          path: bezkoder-app/target/jacoco-ut/index.html
+          path: |
+            bezkoder-app/target/surefire-reports/
+            bezkoder-app/target/site/jacoco-ut/index.html
 
   publish_code_coverage:
     runs-on: ubuntu-latest
@@ -114,14 +116,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: code-coverage
+          path: bezkoder-app/target/site/jacoco-ut/
       - name: Publish code coverage
         run: |
           mkdir -p public
           ls bezkoder-app/
-        ## target/site/jacoco-ut/* public/
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: code-coverage
-          path: public
-          retention-days: 30
+
