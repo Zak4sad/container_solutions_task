@@ -26,3 +26,39 @@ jobs:
           name: bezkoder-app
           path: bezkoder-app/target/*.jar
           retention-days: 1
+
+  unit_test:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8.5-openjdk-11-slim
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run unit tests
+        run: |
+          cd bezkoder-app
+          mvn test -Dtest=SpringBootDataJpaApplicationUnitTest
+
+  integration_test:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8.5-openjdk-11-slim
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run integration tests
+        run: |
+          cd bezkoder-app
+          mvn test -Dtest=SpringBootDataJpaApplicationIntegrationTest
+
+  dependency_scanning:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8.5-openjdk-11-slim
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run dependency check
+        run: |
+          cd bezkoder-app
+          mvn org.owasp:dependency-check-maven:check -DskipIntegrationTests -DskipUnitTests
