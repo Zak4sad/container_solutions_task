@@ -100,7 +100,7 @@ jobs:
         run: |
           cd bezkoder-app
           mvn verify
-          cat target/site/jacoco-ut/dependency-check-report.html | grep -o '<tfoot>.*</tfoot>'
+          ls -lart target/
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
