@@ -1,3 +1,7 @@
+# Container Solutions Task
+
+[![CI/CD Pipeline](https://github.com/Zak4sad/container_solutions_task/actions/workflows/github-actions.yml/badge.svg)](https://github.com/Zak4sad/container_solutions_task/actions/workflows/github-actions.yml)
+
 # Description
 
 This application is now more of a learning project or a playground because here is where I'm try out new things. It all started in 2021 when I took part in a Technical assessment from Container Solutions(the project's specifications can be found [here](./api_specifications/) ).
