@@ -126,9 +126,12 @@ jobs:
           mkdir -p public
           ls -lart bezkoder-app/target/site/jacoco-ut/ | grep index.html
       - name: Publish code coverage
-        uses: irongut/CodeCoverageSummary@v1.3.0
+        run: |
+          mkdir -p public
+          mv bezkoder-app/target/site/jacoco-ut/* public/
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
         with:
-          filename: 'bezkoder-app/target/site/jacoco-ut/index.html'
-          badge: true
-          format: 'markdown'
-          output: 'both'
+          name: code-coverage
+          path: public
+          retention-days: 30
