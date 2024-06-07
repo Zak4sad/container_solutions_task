@@ -88,3 +88,50 @@ jobs:
           curl http://localhost:8080/actuator/health | grep "UP"
       - name: Tear down Docker containers
         run: docker-compose down
+
+  code_coverage:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8.5-openjdk-11-slim
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run code coverage
+        run: |
+          cd bezkoder-app
+          mvn verify
+          total_coverage=$(grep -oP 'Total.*?\K([0-9]{1,3})%' target/jacoco-ut/index.html)
+          echo "Total coverage: $total_coverage"
+      - name: Upload coverage report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage
+          path: |
+            bezkoder-app/target/surefire-reports/
+            bezkoder-app/target/site/jacoco-ut/index.html
+
+  publish_code_coverage:
+    runs-on: ubuntu-latest
+    needs: code_coverage
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: code-coverage
+          path: bezkoder-app/target/site/jacoco-ut/index.html
+      - name: Publish code coverage
+        run: |
+          mkdir -p public
+          ls -lart bezkoder-app/target/site/jacoco-ut/ | grep index.html
+      - name: Publish code coverage
+        run: |
+          mkdir -p public
+          mv bezkoder-app/target/site/jacoco-ut/* public/
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage
+          path: public
+          retention-days: 30
